@@ -1,5 +1,8 @@
 // Datos completamente ficticios para fines académicos. Ninguna marca, precio
 // o stock representa información real de un proveedor.
+//
+// El campo "color" alimenta la ilustración vectorial del neumático
+// (components/TireImage.js), no requiere imágenes externas.
 
 export const products = [
   {
@@ -12,7 +15,7 @@ export const products = [
     price: 68990,
     stock: 12,
     category: "Auto",
-    image: "https://placehold.co/400x400/1e3a8a/ffffff.png?text=RoadMax+TerraGrip",
+    color: "#1e3a8a",
   },
   {
     id: 2,
@@ -24,7 +27,7 @@ export const products = [
     price: 72990,
     stock: 8,
     category: "Auto",
-    image: "https://placehold.co/400x400/1e3a8a/ffffff.png?text=RoadMax+S2",
+    color: "#1e3a8a",
   },
   {
     id: 3,
@@ -36,7 +39,7 @@ export const products = [
     price: 84990,
     stock: 5,
     category: "Auto",
-    image: "https://placehold.co/400x400/0f766e/ffffff.png?text=Voltrix+AllSeason",
+    color: "#0f766e",
   },
   {
     id: 4,
@@ -48,7 +51,7 @@ export const products = [
     price: 94990,
     stock: 0,
     category: "Auto",
-    image: "https://placehold.co/400x400/0f766e/ffffff.png?text=Voltrix+Pro",
+    color: "#0f766e",
   },
   {
     id: 5,
@@ -60,7 +63,7 @@ export const products = [
     price: 79990,
     stock: 10,
     category: "Invierno",
-    image: "https://placehold.co/400x400/334155/ffffff.png?text=Nortek+WinterHold",
+    color: "#334155",
   },
   {
     id: 6,
@@ -72,7 +75,7 @@ export const products = [
     price: 89990,
     stock: 6,
     category: "Invierno",
-    image: "https://placehold.co/400x400/334155/ffffff.png?text=Nortek+Ultra",
+    color: "#334155",
   },
   {
     id: 7,
@@ -84,7 +87,7 @@ export const products = [
     price: 109990,
     stock: 4,
     category: "Camioneta",
-    image: "https://placehold.co/400x400/7c2d12/ffffff.png?text=Duraline+CargoPro",
+    color: "#7c2d12",
   },
   {
     id: 8,
@@ -96,7 +99,7 @@ export const products = [
     price: 124990,
     stock: 3,
     category: "Camioneta",
-    image: "https://placehold.co/400x400/7c2d12/ffffff.png?text=Duraline+XL",
+    color: "#7c2d12",
   },
   {
     id: 9,
@@ -108,7 +111,7 @@ export const products = [
     price: 139990,
     stock: 7,
     category: "Deportivo",
-    image: "https://placehold.co/400x400/b91c1c/ffffff.png?text=SpeedArc+GT",
+    color: "#b91c1c",
   },
   {
     id: 10,
@@ -120,7 +123,7 @@ export const products = [
     price: 159990,
     stock: 2,
     category: "Deportivo",
-    image: "https://placehold.co/400x400/b91c1c/ffffff.png?text=SpeedArc+GT2",
+    color: "#b91c1c",
   },
   {
     id: 11,
@@ -132,7 +135,7 @@ export const products = [
     price: 54990,
     stock: 15,
     category: "Económico",
-    image: "https://placehold.co/400x400/15803d/ffffff.png?text=EcoRoll+GreenPath",
+    color: "#15803d",
   },
   {
     id: 12,
@@ -144,7 +147,7 @@ export const products = [
     price: 59990,
     stock: 9,
     category: "Económico",
-    image: "https://placehold.co/400x400/15803d/ffffff.png?text=EcoRoll+Plus",
+    color: "#15803d",
   },
 ];
 

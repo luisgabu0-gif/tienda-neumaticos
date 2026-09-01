@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import TireImage from "../../components/TireImage";
 import { useCart } from "../../context/CartContext";
 
 const formatCLP = (value) =>
@@ -35,14 +35,8 @@ export default function CartPage() {
             key={item.id}
             className="flex flex-col items-center gap-4 rounded-xl border border-slate-200 p-4 sm:flex-row"
           >
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg">
-              <Image
-                src={item.image}
-                alt={`${item.brand} ${item.model}`}
-                fill
-                sizes="96px"
-                className="object-cover"
-              />
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-slate-50 p-2">
+              <TireImage color={item.color} className="h-full w-full" />
             </div>
             <div className="flex-1 text-center sm:text-left">
               <p className="text-xs font-semibold uppercase text-brand-600">{item.brand}</p>

@@ -17,6 +17,9 @@ export default function Header() {
           <Link href="/" className="hover:text-brand-100">
             Catálogo
           </Link>
+          <Link href="/pedidos" className="hover:text-brand-100">
+            🧾 Mis pedidos
+          </Link>
           <Link href="/carrito" className="relative flex items-center gap-1 hover:text-brand-100">
             🛒 Carrito
             {totalItems > 0 && (

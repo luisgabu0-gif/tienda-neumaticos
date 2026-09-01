@@ -4,17 +4,19 @@ Tienda de e-commerce (simulada) de neumáticos, construida con Next.js (App Rout
 
 ## Stack
 
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
 - React 18
 - Tailwind CSS
-- Estado del carrito persistido en `localStorage` (sin backend)
+- Estado del carrito, stock y pedidos persistido en `localStorage` (sin backend)
 
 ## Funcionalidades
 
-- Catálogo de neumáticos con datos ficticios (`data/products.js`)
+- Catálogo de neumáticos con datos ficticios (`data/products.js`); cada producto se ilustra con un neumático vectorial generado en código (`components/TireImage.js`), así nunca falta una imagen de referencia
 - Buscador avanzado por marca, ancho, perfil y rin
 - Carrito de compras (agregar, eliminar, ajustar cantidades, total en tiempo real)
 - Checkout simulado con validación de formulario (sin pasarela de pago real)
+- Al confirmar un pedido se genera un **ticket de compra** (número de orden, ítems, total, datos de envío) y el **stock del catálogo disminuye** según lo comprado; si el stock ya no alcanza, el checkout lo bloquea
+- **Historial de pedidos** (`/pedidos`) con todos los tickets generados, opción de imprimir el ticket, y un botón para restablecer el stock de demostración
 
 ## Desarrollo local
 

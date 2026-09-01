@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
+import { useProducts } from "../../context/ProductsContext";
+import { useOrders } from "../../context/OrdersContext";
 
 const formatCLP = (value) =>
   new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" }).format(value);
@@ -38,11 +40,20 @@ function validate(form) {
   return errors;
 }
 
+function generateOrderId() {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `NT-${timestamp}-${random}`;
+}
+
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
+  const { hasEnoughStock, decrementStock } = useProducts();
+  const { addOrder } = useOrders();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+  const [stockError, setStockError] = useState("");
+  const [ticket, setTicket] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -52,30 +63,140 @@ export default function CheckoutPage() {
   function handleSubmit(e) {
     e.preventDefault();
     const foundErrors = validate(form);
-    setErrors(foundErrors);
-    if (Object.keys(foundErrors).length === 0) {
-      setSubmitted(true);
-      clearCart();
+    if (Object.keys(foundErrors).length > 0) {
+      setErrors(foundErrors);
+      setStockError("");
+      return;
     }
+    if (!hasEnoughStock(items)) {
+      setStockError(
+        "Uno o más productos ya no tienen stock suficiente. Vuelve al carrito para ajustar las cantidades."
+      );
+      setErrors({});
+      return;
+    }
+
+    const order = {
+      id: generateOrderId(),
+      date: new Date().toISOString(),
+      items: items.map((item) => ({
+        id: item.id,
+        brand: item.brand,
+        model: item.model,
+        width: item.width,
+        profile: item.profile,
+        rim: item.rim,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      total: totalPrice,
+      customer: {
+        fullName: form.fullName,
+        email: form.email,
+        phone: form.phone,
+        address: form.address,
+        city: form.city,
+        postalCode: form.postalCode,
+        cardLast4: form.cardNumber.replace(/\s/g, "").slice(-4),
+      },
+    };
+
+    decrementStock(items);
+    addOrder(order);
+    clearCart();
+    setTicket(order);
   }
 
-  if (submitted) {
+  if (ticket) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <div className="text-5xl">✅</div>
-        <h1 className="mt-4 text-2xl font-bold text-slate-900">
-          ¡Pedido simulado con éxito!
-        </h1>
-        <p className="mt-2 text-slate-500">
-          Este es un checkout ficticio para fines académicos. No se procesó
-          ningún pago real.
-        </p>
-        <Link
-          href="/"
-          className="mt-6 inline-block rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
-        >
-          Volver al catálogo
-        </Link>
+      <div className="mx-auto max-w-xl px-4 py-16">
+        <div className="text-center">
+          <div className="text-5xl">✅</div>
+          <h1 className="mt-4 text-2xl font-bold text-slate-900">
+            ¡Pedido simulado con éxito!
+          </h1>
+          <p className="mt-2 text-slate-500">
+            Este es un checkout ficticio para fines académicos. No se procesó
+            ningún pago real.
+          </p>
+        </div>
+
+        <div className="mt-8 rounded-xl border border-slate-200 p-6 print:border-0">
+          <div className="flex items-center justify-between border-b border-dashed border-slate-300 pb-4">
+            <div>
+              <p className="text-xs uppercase text-slate-500">Ticket de compra</p>
+              <p className="font-mono text-sm font-bold text-slate-900">{ticket.id}</p>
+            </div>
+            <p className="text-sm text-slate-500">
+              {new Date(ticket.date).toLocaleString("es-CL")}
+            </p>
+          </div>
+
+          <div className="mt-4 space-y-1 border-b border-dashed border-slate-300 pb-4 text-sm text-slate-600">
+            <p>
+              <span className="font-semibold text-slate-900">Cliente:</span>{" "}
+              {ticket.customer.fullName}
+            </p>
+            <p>
+              <span className="font-semibold text-slate-900">Envío:</span>{" "}
+              {ticket.customer.address}, {ticket.customer.city} ({ticket.customer.postalCode})
+            </p>
+            <p>
+              <span className="font-semibold text-slate-900">Contacto:</span>{" "}
+              {ticket.customer.email} · {ticket.customer.phone}
+            </p>
+            <p>
+              <span className="font-semibold text-slate-900">Pago:</span> Tarjeta terminada
+              en {ticket.customer.cardLast4}
+            </p>
+          </div>
+
+          <ul className="mt-4 divide-y divide-slate-100">
+            {ticket.items.map((item) => (
+              <li key={item.id} className="flex items-center justify-between py-2 text-sm">
+                <div>
+                  <p className="font-medium text-slate-900">
+                    {item.brand} {item.model}
+                  </p>
+                  <p className="text-slate-500">
+                    {item.width}/{item.profile} R{item.rim} · x{item.quantity}
+                  </p>
+                </div>
+                <p className="font-semibold text-slate-900">
+                  {formatCLP(item.price * item.quantity)}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-4 flex items-center justify-between border-t border-slate-300 pt-4">
+            <span className="font-bold text-slate-900">Total pagado</span>
+            <span className="text-xl font-extrabold text-slate-900">
+              {formatCLP(ticket.total)}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center print:hidden">
+          <button
+            onClick={() => window.print()}
+            className="rounded-lg border border-slate-300 px-6 py-3 text-center font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Imprimir ticket
+          </button>
+          <Link
+            href="/pedidos"
+            className="rounded-lg border border-slate-300 px-6 py-3 text-center font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Ver mis pedidos
+          </Link>
+          <Link
+            href="/"
+            className="rounded-lg bg-brand-600 px-6 py-3 text-center font-semibold text-white hover:bg-brand-700"
+          >
+            Volver al catálogo
+          </Link>
+        </div>
       </div>
     );
   }
@@ -265,6 +386,15 @@ export default function CheckoutPage() {
             {formatCLP(totalPrice)}
           </span>
         </div>
+
+        {stockError && (
+          <div className="col-span-full rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+            {stockError}{" "}
+            <Link href="/carrito" className="font-semibold underline">
+              Ir al carrito
+            </Link>
+          </div>
+        )}
 
         <button
           type="submit"

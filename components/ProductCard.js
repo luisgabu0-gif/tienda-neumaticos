@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import TireImage from "./TireImage";
 import { useCart } from "../context/CartContext";
 
 const formatCLP = (value) =>
@@ -12,14 +12,8 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
-      <div className="relative h-48 w-full">
-        <Image
-          src={product.image}
-          alt={`${product.brand} ${product.model}`}
-          fill
-          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover"
-        />
+      <div className="flex h-48 w-full items-center justify-center bg-slate-50 p-6">
+        <TireImage color={product.color} className="h-full w-full drop-shadow-sm" />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">

@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { products } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
 
 export default function HomePage() {
+  const { products } = useProducts();
   const [filters, setFilters] = useState({
     brand: "",
     width: "",
@@ -27,7 +28,7 @@ export default function HomePage() {
       }
       return true;
     });
-  }, [filters]);
+  }, [products, filters]);
 
   return (
     <div>
